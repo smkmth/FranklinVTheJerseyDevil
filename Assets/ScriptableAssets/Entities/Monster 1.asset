@@ -1,0 +1,20 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 811186ca523abd34c94e27af85031b7f, type: 3}
+  m_Name: Monster 1
+  m_EditorClassIdentifier: 
+  entityActions:
+  - {fileID: 11400000, guid: c795ca3879df4d14c9c28a07106774e2, type: 2}
+  - {fileID: 11400000, guid: 9170dbfbe4b5b8f4ba857d1b4ca8d8e8, type: 2}
+  - {fileID: 11400000, guid: dbf9a25eb5ac5ed4dbc61a3973075074, type: 2}
+  sprite: {fileID: 21300004, guid: 53d3df5e2770bfb46bbf63809a509fd1, type: 3}
+  MaxHealth: 100

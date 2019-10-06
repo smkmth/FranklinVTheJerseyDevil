@@ -1,35 +1,49 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using TMPro;
+using UnityEngine.UI;
 
 public class EntityContainer : MonoBehaviour
 {
-    public int health;
-    public bool playerParty;
-
+    public int Health;
     public EntityStats stats;
+    public Status currentStatus;
+    public bool isDead;
+    public bool isControlled;
+    public TextMeshProUGUI label;
+    public SpriteRenderer image;
 
-    private BattleDisplayer battleDisplayer;
-
-    public void Start()
+    public void UpdateText()
     {
-        battleDisplayer = GameObject.Find("BattleManager").GetComponent<BattleDisplayer>();
+        label.text = name + " " + Health;
+    }
+    public void Init(EntityStats _stats, bool _isControlled)
+    {
+        isControlled = _isControlled;
+
+        stats = _stats;
+        Health = stats.MaxHealth;
+        name = stats.name;
+
+        image = GetComponent<SpriteRenderer>();
+        image.sprite = stats.sprite;
     }
 
-    public void TakeTurn()
+    public void PlayAnimation(EntityAction action, System.Action _finishedAnimation)
     {
-        battleDisplayer.DisplayOptions(stats.entityActions, this);
+
+        StartCoroutine(DoLittleAction(_finishedAnimation));
     }
 
-    public void SelectOption(int optionIndex)
+    public IEnumerator DoLittleAction(System.Action _finishedAnimation)
     {
-        if(stats.entityActions[optionIndex].SubActions.Count == 0)
-        {
-            PerformAction();
-        }
-        else
-        {
+        Debug.Log("ANIMATION");
+        yield return new WaitForSeconds(1);
+        _finishedAnimation.Invoke();
+        Debug.Log("FINISHED");
+        
 
-        }
     }
+
 }
