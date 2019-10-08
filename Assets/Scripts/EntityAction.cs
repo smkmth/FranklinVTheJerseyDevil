@@ -8,6 +8,6 @@ public class EntityAction : ScriptableObject
     public List<EntityAction> SubActions;
 
     public int damage;
-    public Status statusEffect;
+    public List<Status> statusEffects;
 
 }

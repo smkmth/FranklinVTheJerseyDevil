@@ -1025,6 +1025,7 @@ GameObject:
   - component: {fileID: 1066687397}
   - component: {fileID: 1066687396}
   - component: {fileID: 1066687395}
+  - component: {fileID: 1066687398}
   m_Layer: 0
   m_Name: BattleManager
   m_TagString: Untagged
@@ -1085,8 +1086,6 @@ MonoBehaviour:
   - {fileID: 11400000, guid: fb9656c10af19d44e851e18dc70f1135, type: 2}
   enemeies:
   - {fileID: 11400000, guid: 0197f1bbfaf77404398b2629024d354b, type: 2}
-  - {fileID: 11400000, guid: aec735de5355c6941b5f2db38d5d5215, type: 2}
-  - {fileID: 11400000, guid: d201d4355c02a2f489450743deabf920, type: 2}
   currentCombatant: 0
   playerPartyCount: 3
   enemyPartyCount: 3
@@ -1110,6 +1109,20 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1066687398
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1066687394}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 27343a863ece9464dabd4ba456b2221d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  BasePoisionDamage: 3
+  BaseChanceToStun: 50
 --- !u!114 &1082557398 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 8893090153280990133, guid: 9cbe63b64fa2eef4a843dc56842b01c4,
@@ -2610,21 +2623,6 @@ PrefabInstance:
     - target: {fileID: 3134112541556099479, guid: 9cbe63b64fa2eef4a843dc56842b01c4,
         type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 8893090153280990133, guid: 9cbe63b64fa2eef4a843dc56842b01c4,
-        type: 3}
-      propertyPath: playerParty
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 3071832446066914151, guid: 9cbe63b64fa2eef4a843dc56842b01c4,
-        type: 3}
-      propertyPath: m_Sprite
-      value: 
-      objectReference: {fileID: 0}
-    - target: {fileID: 3071832446066914151, guid: 9cbe63b64fa2eef4a843dc56842b01c4,
-        type: 3}
-      propertyPath: m_WasSpriteAssigned
       value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []

@@ -1,6 +1,8 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using TMPro;
+
 public enum BattleState
 {
     PartyWon,
@@ -26,6 +28,8 @@ public class BattleManager : MonoBehaviour
     public int deadEnemies;
     public BattleState currentBattleState;
 
+    public TextMeshProUGUI battleOverMessage;
+
     public void Start()
     {
         battleDisplayer = GetComponent<BattleDisplayer>();
@@ -35,6 +39,8 @@ public class BattleManager : MonoBehaviour
 
     public void StartBattle()
     {
+        enemyPartyCount = enemeies.Count;
+        playerPartyCount = players.Count;
         currentBattleState = BattleState.BattleContinues;
         //find who we are fighting
         for (int i = 0; i < playerPartyCount; i++)
@@ -44,12 +50,14 @@ public class BattleManager : MonoBehaviour
         int j = 0;
         for (int i = playerPartyCount; i < (enemyPartyCount + playerPartyCount); i++)
         {
-            combatants[i].Init(enemeies[j], false);
-            j++;
+            if (combatants[i].stats)
+            {
+
+                combatants[i].Init(enemeies[j], false);
+                j++;
+            }
         }
 
-        enemyPartyCount = enemeies.Count;
-        playerPartyCount = players.Count;
         battleDisplayer.PopulateMenu();
 
 
@@ -57,6 +65,8 @@ public class BattleManager : MonoBehaviour
         //find out who goes first
         //  currentCombatant = Random.Range(0, combatants.Count);
         currentCombatant = 0;
+        battleDisplayer.HighlightCurrentTurn(combatants[currentCombatant]);
+
         //call take turn with that guy
         TakeTurn();
 
@@ -68,9 +78,9 @@ public class BattleManager : MonoBehaviour
     {
         Debug.Log("Its " + combatants[currentCombatant].name + " Turn! ");
         
-        if (combatants[currentCombatant].isControlled)
+        if (combatants[currentCombatant].isControlled && combatants[currentCombatant].CanAttack)
         {
-
+            
             battleDisplayer.PopulateActions(combatants[currentCombatant].stats);
             battleDisplayer.awaitingInput = true;
             return;
@@ -91,7 +101,6 @@ public class BattleManager : MonoBehaviour
 
             }
             int action = Random.Range(0, (combatants[currentCombatant].stats.entityActions.Length -1));
-
             //perform that move on a target      
             PerformAction(combatants[currentCombatant].stats.entityActions[action], combatants[target]);
         }
@@ -100,6 +109,7 @@ public class BattleManager : MonoBehaviour
 
     public void TakePlayerTurn(int selectedActionIndex, int selectedTargetIndex)
     {
+
         PerformAction(combatants[currentCombatant].stats.entityActions[selectedActionIndex], combatants[selectedTargetIndex]);
         
 
@@ -110,19 +120,25 @@ public class BattleManager : MonoBehaviour
     {
         Debug.Log(combatants[currentCombatant].name + " performed " + action.name + " on " + target.name);
         combatants[currentCombatant].PlayAnimation(action, UpdateBattle);
-        target.currentStatus = action.statusEffect;
+        
+        foreach(Status status in action.statusEffects)
+        {
+            target.currentStatus.Add(status);
+        }
+
         target.Health -= action.damage;
 
 
     }
-
+ 
     public void UpdateBattle()
     {
         for (int i = 0; i < playerPartyCount + enemyPartyCount; i++)
         {
+            combatants[i].UpdateText();
+
             if (!combatants[i].isDead)
             {
-
                 if (combatants[i].Health <= 0)
                 {
                     combatants[i].isDead = true;
@@ -137,11 +153,7 @@ public class BattleManager : MonoBehaviour
                 }
             }
         }
-        for(int i =0; i< enemyPartyCount + playerPartyCount; i++)
-        {
-            
-            combatants[i].UpdateText();
-        }
+     
         if (deadEnemies >= enemyPartyCount)
         {
             currentBattleState = BattleState.PartyWon;
@@ -166,6 +178,7 @@ public class BattleManager : MonoBehaviour
             currentCombatant++;
             if (currentCombatant >= (playerPartyCount + enemyPartyCount))
             {
+                UpdateRound();
                 currentCombatant = 0;
 
             }
@@ -173,6 +186,8 @@ public class BattleManager : MonoBehaviour
             {
                 currentCombatant++;
             }
+            battleDisplayer.HighlightCurrentTurn(combatants[currentCombatant]);
+
             TakeTurn();
         }
         else
@@ -181,14 +196,33 @@ public class BattleManager : MonoBehaviour
         }
     }
 
+    public void UpdateRound()
+    {
+        for (int i = 0; i < playerPartyCount + enemyPartyCount; i++)
+        {
+            if (!combatants[i].isDead)
+            {
+                combatants[i].ApplyStatusEffects();
+                combatants[i].UpdateText();
+
+            }
+        }
+        UpdateBattle();
+    }
+
     public void EndCombat()
     {
         switch (currentBattleState)
         {
             case BattleState.PartyLost:
+                battleOverMessage.gameObject.SetActive(true);
+                battleOverMessage.text = "YOU DONE LOST";
                 Debug.Log("Failure!");
                 break;
             case BattleState.PartyWon:
+                battleOverMessage.gameObject.SetActive(true);
+                battleOverMessage.text = "YOU DONE WON";
+
                 Debug.Log("Victory!");
                 break;
         }

@@ -7,16 +7,24 @@ using UnityEngine.UI;
 public class EntityContainer : MonoBehaviour
 {
     public int Health;
+    
     public EntityStats stats;
-    public Status currentStatus;
+    public List<Status> currentStatus;
     public bool isDead;
     public bool isControlled;
     public TextMeshProUGUI label;
     public SpriteRenderer image;
+    public bool unUsed;
+    public bool CanAttack= true;
+    public SpriteRenderer attackAnim;
 
     public void UpdateText()
     {
         label.text = name + " " + Health;
+        if (isDead)
+        {
+            label.text = name + " DEAD ";
+        }
     }
     public void Init(EntityStats _stats, bool _isControlled)
     {
@@ -38,12 +46,18 @@ public class EntityContainer : MonoBehaviour
 
     public IEnumerator DoLittleAction(System.Action _finishedAnimation)
     {
-        Debug.Log("ANIMATION");
+        attackAnim.gameObject.SetActive(true);
         yield return new WaitForSeconds(1);
+        attackAnim.gameObject.SetActive(false);
         _finishedAnimation.Invoke();
-        Debug.Log("FINISHED");
-        
+    }
 
+    public void ApplyStatusEffects()
+    {
+        foreach(Status status in currentStatus)
+        {
+            StatusEffects.statusEffects.ApplyStatus(status, this);
+        }
     }
 
 }

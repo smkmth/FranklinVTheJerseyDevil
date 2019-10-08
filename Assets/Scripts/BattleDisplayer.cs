@@ -12,6 +12,17 @@ public enum ActionWindows
     Target,
     Confirm
 }
+public struct EntityLabel
+{
+    public TextMeshProUGUI label;
+    public EntityContainer container;
+
+    public EntityLabel(TextMeshProUGUI label, EntityContainer container)
+    {
+        this.label = label;
+        this.container = container;
+    }
+}
 public class BattleDisplayer : MonoBehaviour
 {
 
@@ -27,8 +38,8 @@ public class BattleDisplayer : MonoBehaviour
     public Transform playerPanel;
 
     private List<TextMeshProUGUI> actionText;
-    private List<TextMeshProUGUI> targetText;
-    private List<TextMeshProUGUI> playerText;
+    private List<EntityLabel> targetText;
+    private List<EntityLabel> playerText;
 
     public SelectOption SelectAction = new SelectOption();
 
@@ -36,29 +47,50 @@ public class BattleDisplayer : MonoBehaviour
     {
         battleManager = GetComponent<BattleManager>();
         SelectAction.AddListener(battleManager.TakePlayerTurn);
-        playerText = new List<TextMeshProUGUI>();
-        targetText = new List<TextMeshProUGUI>();
+        playerText = new List<EntityLabel>();
+        targetText = new List<EntityLabel>();
         actionText = new List<TextMeshProUGUI>();
     }
 
+    public void HighlightCurrentTurn(EntityContainer container)
+    {
+
+        foreach(EntityLabel label in playerText)
+        {
+            if (label.container == container)
+            {
+                label.label.color = Color.blue;
+            }
+            else
+            {
+                label.label.color = Color.black;
+
+            }
+        }
+      
+
+    }
     public void PopulateMenu()
     {
         for (int i = 0; i < battleManager.playerPartyCount + battleManager.enemyPartyCount; i++)
         {
+    
             if (!battleManager.combatants[i].isControlled)
             {
+                //is enemy
                 TextMeshProUGUI textMesh = Instantiate(textPrefab, enemyPanel).GetComponent<TextMeshProUGUI>();
                 textMesh.text = battleManager.combatants[i].name + " " + battleManager.combatants[i].Health;
                 battleManager.combatants[i].label = textMesh;
-                targetText.Add(textMesh);
+                targetText.Add(new EntityLabel(textMesh, battleManager.combatants[i]));
                 
             }
             else
             {
+                //is player
                 TextMeshProUGUI textMesh = Instantiate(textPrefab, playerPanel).GetComponent<TextMeshProUGUI>();
                 textMesh.text = battleManager.combatants[i].name + " " + battleManager.combatants[i].Health;
                 battleManager.combatants[i].label = textMesh;
-                playerText.Add(textMesh);
+                playerText.Add(new EntityLabel(textMesh, battleManager.combatants[i]));
             }
         }
     }
@@ -69,15 +101,18 @@ public class BattleDisplayer : MonoBehaviour
         {
             GameObject.Destroy(child.gameObject);
         }
+
         actionText.Clear();
+
         for (int i = 0; i < stats.entityActions.Length; i++)
         {
             TextMeshProUGUI textMesh = Instantiate(textPrefab, actionPanel).GetComponent<TextMeshProUGUI>();
             textMesh.text = stats.entityActions[i].name;
             actionText.Add(textMesh);
         }
-
+        ChangeAction(0);
     }
+
     public void ChangeAction(int actionChange)
     {
         switch (currentlyFocuedWindow)
@@ -96,7 +131,7 @@ public class BattleDisplayer : MonoBehaviour
                 actionText[currentlySelectedAction].color = Color.red;
                 break;
             case ActionWindows.Target:
-                targetText[currentlySelectedTarget].color = Color.black;
+                targetText[currentlySelectedTarget].label.color = Color.black;
                 currentlySelectedTarget += actionChange;
                 if (currentlySelectedTarget < 0)
                 {
@@ -106,9 +141,8 @@ public class BattleDisplayer : MonoBehaviour
                 {
                     currentlySelectedTarget = currentlySelectedTarget % targetText.Count;
                 }
-                targetText[currentlySelectedTarget].color = Color.red;
+                targetText[currentlySelectedTarget].label.color = Color.red;
                 break;
-
         }
 
     }
@@ -118,9 +152,9 @@ public class BattleDisplayer : MonoBehaviour
         currentlyFocuedWindow = ActionWindows.Action;
         currentlySelectedAction = 0;
         currentlySelectedTarget = 0;
-        foreach(TextMeshProUGUI text in targetText)
+        foreach(EntityLabel text in targetText)
         {
-            text.color = Color.black;
+            text.label.color = Color.black;
         }
         foreach (TextMeshProUGUI text in actionText)
         {
@@ -132,7 +166,6 @@ public class BattleDisplayer : MonoBehaviour
     {
         if (awaitingInput)
         {
-
             if (Input.GetButtonDown("Down"))
             {
                 ChangeAction(1);

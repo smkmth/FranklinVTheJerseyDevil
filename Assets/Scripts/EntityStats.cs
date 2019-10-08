@@ -2,10 +2,10 @@
 using System.Collections.Generic;
 using UnityEngine;
 public enum Status
-{
-    Fine,
+{ 
     Poisoned,
     Buffed,
+    Stunned
 }
 [CreateAssetMenu(menuName = "Entity")]
 public class EntityStats : ScriptableObject
@@ -16,6 +16,7 @@ public class EntityStats : ScriptableObject
 
     public Sprite sprite;
     public int MaxHealth;
+    public int BaseDamage;
 
 
 }
