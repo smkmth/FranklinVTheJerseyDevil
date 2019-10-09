@@ -14,7 +14,7 @@ TagManager:
   - 
   - 
   - PostProcessing
-  - 
+  - NPC
   - 
   - 
   - 
@@ -40,4 +40,22 @@ TagManager:
   m_SortingLayers:
   - name: Default
     uniqueID: 0
+    locked: 0
+  - name: Ground
+    uniqueID: 1027657551
+    locked: 0
+  - name: Walls
+    uniqueID: 944999469
+    locked: 0
+  - name: Mid
+    uniqueID: 3920829505
+    locked: 0
+  - name: Top
+    uniqueID: 4139954735
+    locked: 0
+  - name: Player
+    uniqueID: 2379386235
+    locked: 0
+  - name: AbovePlayer
+    uniqueID: 4204492529
     locked: 0
